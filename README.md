@@ -34,7 +34,8 @@ La liste (non exhaustive) suivante comporte des éléments d'évaluation du proj
     4. [Création de clés SSH pour l'authentification avec GitHub](#ssh-dev)
     5. [Clonage du projet et configuration des identifiants](#clone)
     6. [Configuration de VSCode pour le développement Python dans WSL](#config-vs)
-    7. [Export de votre machine virtuelle pour réutilisation ultérieure](#export-wsl)
+    7. [Export de votre machine virtuelle](#export-wsl)
+    8. [Réutilisation d'une machine virtuelle](#reuse-wsl)
 3. [Mise en place du serveur CI](#jenkins)
     1. [Configuration d'un environnement WSL](#jenkins-wsl)
     2. [Autorisation de Jenkins dans GitHub](#jenkins-github)
@@ -166,11 +167,19 @@ git config --global user.name "MonNom"
 git config --global user.email "prenom.nom@univ-rennes.fr"
 ```
 
+Finalement, le développement d'un projet Python nécessite la création d'un environnement virtuel Python contenant les bibliothèques dont dépend le projet. Vous pouvez créer un envrionnement virtuel Python, l'activer puis y installer les dépendences, en exécutant les commandes suivantes :
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
 <a name="config-vs" />
 
 ### Configuration de VSCode pour le développement Python dans WSL
 
-À l'intérieur du terminal de la machine virtuelle, vous pouvez taper la commande suivante pour ouvrir le projet dans Visual Studio Code :
+À l'intérieur du terminal de la machine virtuelle, dans le répertoire du projet, vous pouvez taper la commande suivante pour ouvrir le projet dans Visual Studio Code :
 
 ```bash
 code .
@@ -183,53 +192,35 @@ code .
 > ```
 > S'il s'agit d'une erreur différente, assurez-vous que vous avez bien suivi les [instructions](#install-vs) d'installation de Visual Studio Code, puis redémarrez le terminal et la machine virtuelle.
 
-Ouvrez l'un des fichiers Python du projet dans VSCode. Un message devrait apparaître, vous invitant à installer l'extension Python dans WSL. Faites cette installation.
+Ouvrez l'un des fichiers Python du projet dans VSCode. Un message devrait apparaître, vous invitant à installer l'extension Python dans WSL. Faites cette installation (si le message n'apparaît pas, vous pouvez trouver l'extension Python à installer dans l'explorateur d'extensions de VSCode.
 
 > Dans le terminal de Visual Studio Code, si vous travaillez sur une machine de l'université, il est possible que vous soyez connecté en tant que `root` lorsque vous ouvrez votre projet. Si c'est le cas, changez d'utilisateur en utilisant la commande `su -- MonNomUtilisateur`.
 
-Dans le terminal de la machine virtuelle, vous devez maintenant créer un environnement Python, dans lequel seront installés les paquets dont dépend votre projet. Exécutez les commandes suivantes :
+Vérifiez que vous êtes en mesure d'exécuter le projet (script `PowerGrid.py`). Si vous n'avez pas directement un bouton en forme de flèche pour l'exécution du code en haut à droite de l'interface de VSCode, vous pouvez exécuter vos scripts en ligne de commande dans le terminal de l'éditeur. L'activation d'un environnement python dans le terminal se fait grâce à la commande :
 
 ```bash
-python3 -m venv venv
 source venv/bin/activate
-pip install -r requirements.txt
 ```
 
-Dans l'interface de Visual Studio Code, un message a du apparaître pour signaler la détection de la création d'un nouvel environnement Python. Acceptez la sélection de cet environnement pour le projet. Si aucun message n'apparaît, vous pouvez sélectionner l'environnement python `venv` en cliquant sur la mention concernant votre version de python, en bas à droite de l'interface quand un fichier `.py` est ouvert dans l'éditeur.
-
-Vérifiez que vous êtes en mesure d'exécuter le projet (script `PowerGrid.py`). Si vous n'avez pas directement une flèche verte pour l'exécution en haut à droite de l'interface de VSCode, vous pouvez exécuter vos scripts en ligne de commande dans le terminal de l'éditeur. L'activation d'un environnement python dans le terminal se fait grâce à la commande :
+L'exécution du script `PowerGrid.py` dans l'invite de comamnde se fait alors via la commande :
 
 ```bash
-source venv/bin/activate
+python PowerGrid.py
 ```
 
 <a name="export-wsl" />
 
 ### Export de votre machine virtuelle pour réutilisation ultérieure
 
-#### Quitter ou relancer une machine virtuelle
-
-Depuis un terminal d'une machine virtuelle, vous pouvez quitter celle-ci en tapant la commande `exit`. Vous quitterez également la machine virtuelle si vous êtes emmené à fermer le terminal.
-
-Pour se reconnecter à une machine virtuelle, il faut connaître le nom de la ditribution de celle-ci (par exemple `Ubuntu` dans le cas de la machine virtuelle décrite ci-dessous comme notre environnement de développement), ainsi que le nom d'utilisateur que vous aviez choisi pour cette machine virtuelle.
-
-Par exemple, pour me connecter à une machine virtuelle `Ubuntu` avec l'utilisateur `louis`, j'exécuterai alors la commande :
-
-```bash
-wsl --distribution Ubuntu --user louis
-```
-
-Pour retourner à l'intérieur de votre espace personnel sur la VM, vous pouvez finalement exécuter la commande :
-
-```bash
-cd ~
-```
-
-#### Export d'une machine virtuelle pour réutilisation ultérieure
-
 > Note : Cette section est principalement à destination des étudiants ayant choisi de développer en utilisant les machines de l'université. Pour les autres étudiants, les machines virtuelles WSL sont conservées en l'état d'un allumage à l'autre de l'ordinateur, il est donc moins critique de les sauvegarder entre deux séances de TP.
 
 Si vous souhaitez sauvegarder un état de votre machine virtuelle (par exemple, dans le cas des ordinateurs de l'université qui sont réinitialisés à chaque déconnexion), vous pouvez exporter la machine virtuelle vers un fichier au moyen d'une commande. Vous pourrez alors stocker ce fichier à un endroit sécurisé et demander à wsl de le charger lors d'une utilisation ultérieure.
+
+Pour exécuter les commandes suivantes, vous devez disposer d'une invite de commande Windows située à l'extérieur de vos machines virtuelles WSL. Vous pouvez donc commencer par quitter la machine virtuelle dans laquelle vous étieez en train de travailler avec la commande :
+
+```bash
+exit
+```
 
 Pour commencer, demandez à wsl de lister les machines virtuelles existant sur votre système :
 
@@ -243,43 +234,82 @@ Une fois votre machine virtuelle identifiée parmi les noms existants, exécutez
 wsl --export Ubuntu ubuntu-dev.tar
 ```
 
-> Note : Cette commande a pour fonction de créer un fichier, elle doit donc être exécutée dans un dossier au sein duquel vous disposez des droits en écriture. Utilisez la commande `cd chemin/vers/un/dossier` pour déplacer l'invite de commande vers un dossier dans lequel l'écriture est possible.
+> Note : Cette commande a pour fonction de créer un fichier, elle doit donc être exécutée dans un dossier au sein duquel vous disposez des droits en écriture. Utilisez la commande `cd chemin/vers/un/dossier` pour déplacer l'invite de commande vers un dossier dans lequel l'écriture est possible. Par exemple : `cd c:/Users/louis/Documents`.
 
 Vous devriez voir apparaître un fichier `ubuntu-dev.tar` faisant quelques gigaoctets. Il s'agit du fichier à conserver dans un endroit sûr.
 
 > Si vous travaillez sur les machines de l'université, placez ce fichier sur le réseau (lecteur **H:**) ou sur un emplacement cloud personnel. Un fichier laissé sur le lecteur **C:** ne sera pas forcément acessible lors de votre prochaine connexion.
 
-Afin de charger votre machine virtuelle sauvegardée, lors d'une utilisation ultérieure, vous pourrez utiliser la commande suivante :
+<a name="reuse-wsl" />
+
+### Réutilisation d'une machine virtuelle
+
+#### Import d'une machine virtuelle depuis un fichier de sauvegarde
+
+Afin de charger votre machine virtuelle sauvegardée, vous pouvez utiliser la commande suivante :
 
 ```bash
 wsl --import Ubuntu-dev UbuntuDev ubuntu-dev.tar
 ```
 
-> Si vous travaillez sur les machines de l'université, exécutez cette commande sur le lecteur local **C:** (par exemple dans vos documents). Il vous manquera des droits si vous cherchez à réaliser cette opération drectement sur le réseau.
+> Si vous travaillez sur les machines de l'université, exécutez cette commande sur le lecteur local **C:** (par exemple dans vos documents), dans un répertoire où vous aurez au préalable placé le fichier de sauvegarde `.tar`. Il vous manquera des droits si vous cherchez à réaliser cette opération drectement sur le réseau.
 
-Le premier paramètre de cette commande est le nom que portera la distribution dans WSL une fois importée. Le deuxième paramètre est le chemin vers le dossier dans lequel la machine virtuelle importée sera stockée, et le dernier argument est le nom du fichier `.tar` dans lequel la VM a été exportée par le passé.
+Le premier paramètre de cette commande est le nom que portera la distribution dans WSL une fois importée. Le deuxième paramètre est le chemin vers le dossier dans lequel la machine virtuelle importée sera stockée, et le dernier argument est le chemin vers le fichier `.tar` dans lequel la VM a été exportée par le passé.
 
 > Note : Encore une fois, cette commande doit être exécutée dans un dossier au sein duquel vous disposez des droits en écriture.
 
-Pour lancer la machine virtuelle importée, il vous suffira alors de taper la commande :
+Afin de vérifier que votre nouvelle machine virtuelle importée est bien disponible dans WSL, vous pouvez exécuter la commande :
 
 ```bash
-wsl --distribution Ubuntu-dev --user MonNomUtilisateur
+wsl --list
 ```
 
-Puis tapez la commande :
+Votre machine virtuelle devrait se trouver dans la liste.
+
+#### Connexion à une machine virtuelle importée
+
+Pour commencer, demandez à wsl de lister les machines virtuelles existant sur votre système :
+
+```bash
+wsl --list
+```
+
+La machine virtuelle que vous souhaitez lancer doit se trouver dans la liste qui est retournée par cette commande.
+
+Pour se connecter à une machine virtuelle, il faut connaître le nom de celle-ci (par exemple `UbuntuDev` dans le cas de la machine virtuelle décrite ci-dessus comme notre environnement de développement), ainsi que le nom d'utilisateur que vous aviez choisi pour cette machine virtuelle.
+
+Par exemple, pour me connecter à une machine virtuelle `UbuntuDev` avec l'utilisateur `louis`, j'exécuterai alors la commande :
+
+```bash
+wsl --distribution UbuntuDev --user louis
+```
+
+Pour retourner à l'intérieur de votre espace personnel sur la VM, vous pouvez finalement exécuter la commande :
 
 ```bash
 cd ~
 ```
 
-Pour rejoindre votre dossier personnel sur la VM (où se trouve votre projet).
+Enfin, afin de rejoindre l'emplacement de votre dossier projet, qui devrait se trouver dans votre espace personnel, utilisez la commande :
+
+```bash
+cd PowerGridStudent
+```
+
+Vous pourrez alors reprendre le développement de votre projet en activant l'environnement virtuel Python, puis en ouvrant votre environnement de développement, avec les commandes suivantes :
+
+```bash
+source venv/bin/activate
+code .
+```
+
+> Note : Si VSCode ne semble pas connecté à la machine virtuelle au lancement, vérifier que l'extension WSL est bien installée dans le navigateur d'extensions, et installez-là au besoin.
 
 <a name="jenkins" />
 
 ## Mise en place du serveur CI
 
-Vous allez mettre en place un serveur d'automatisation des tests de votre projet avec Jenkins. Ce serveur peut être mis en place une fois par l'un des membres du groupe. En situation réelle, l'intérêt d'un tel serveur est de fonctionner jour et nuit et de scruter les changements apportés au projet en réalisant continuellement des tests. Dans votre cas, vous pouvez vous contenter dans un premier temps de mettre en place le serveur une première fois pour apprendre à le configurer.
+Vous allez mettre en place un serveur d'automatisation des tests de votre projet avec Jenkins. Ce serveur peut être mis en place une fois par un seul des membres du groupe. En situation réelle, l'intérêt d'un tel serveur est de fonctionner jour et nuit et de scruter les changements apportés au projet en réalisant continuellement des tests. Dans votre cas, vous pouvez vous contenter dans un premier temps de mettre en place le serveur une première fois pour apprendre à le configurer.
 
 **Ces opérations peuvent également être réalisées sur les machines de l'université, ou sur vos ordinateurs personnels selon votre choix. En cas d'utilisation de votre ordinateur, veillez à avoir activé le service WSL dans Windows.**
 
