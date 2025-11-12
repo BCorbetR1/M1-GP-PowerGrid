@@ -10,7 +10,7 @@ class Reseau:
 
         self.noeud_entree = -1
 
-    def definir_entree(self, n: int) -> None:
+    def definir_entree(self, n: int):
         if n in self.noeuds.keys():
             self.noeud_entree = n
         else:
@@ -20,7 +20,7 @@ class Reseau:
         if n >= 0:
             self.noeuds[n] = coords
 
-    def ajouter_arc(self, n1: int, n2: int) -> None:
+    def ajouter_arc(self, n1: int, n2: int):
         if n1 > n2:
             tmp = n2
             n2 = n1
@@ -44,11 +44,11 @@ class Reseau:
     def configurer(self, t: Terrain):
         self.noeud_entree, self.noeuds, self.arcs  = self.strat.configurer(t)
 
-    def afficher(self) -> None:
+    def afficher(self):
         # TODO
         pass
 
-    def afficher_avec_terrain(self, t: Terrain) -> None:
+    def afficher_avec_terrain(self, t: Terrain):
         for ligne, l in enumerate(t.cases):
             for colonne, c in enumerate(l):
                 if (ligne, colonne) not in self.noeuds.values():
