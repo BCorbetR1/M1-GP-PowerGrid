@@ -1,6 +1,6 @@
-
 from Terrain import Terrain, Case
 from StrategieReseau import StrategieReseau, StrategieReseauAuto
+
 
 class Reseau:
     def __init__(self):
@@ -39,10 +39,18 @@ class Reseau:
 
     def valider_distribution(self, t: Terrain) -> bool:
         # TODO
+        clients = t.get_clients()
+        clients_coord = {}
+        for j in range(len(clients)):
+            clients_coord[j] = clients(j)
+
+        for i in range(len(self.noeuds)):
+            (n1, n2) = self.noeuds.keys(i)
+
         return False
 
     def configurer(self, t: Terrain):
-        self.noeud_entree, self.noeuds, self.arcs  = self.strat.configurer(t)
+        self.noeud_entree, self.noeuds, self.arcs = self.strat.configurer(t)
 
     def afficher(self) -> None:
         # TODO
@@ -85,4 +93,3 @@ class Reseau:
             else:
                 cout += 1
         return cout
-
