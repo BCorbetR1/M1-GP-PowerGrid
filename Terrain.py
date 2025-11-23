@@ -1,11 +1,12 @@
-
 from enum import Enum
+
 
 class Case(Enum):
     VIDE = 0
     OBSTACLE = 1
     CLIENT = 2
     ENTREE = 4
+
 
 class Terrain:
     def __init__(self):
@@ -74,4 +75,3 @@ class Terrain:
                 else:
                     print(" ", end="")
             print()
-

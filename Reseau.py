@@ -1,3 +1,4 @@
+from os import wait
 from Terrain import Terrain, Case
 from StrategieReseau import StrategieReseau, StrategieReseauAuto
 
@@ -39,15 +40,41 @@ class Reseau:
 
     def valider_distribution(self, t: Terrain) -> bool:
         # TODO
+        # Coordonnées de noeud d'entrée
+        entry = t.get_entree()
+        if self.noeud_entree not in self.noeuds and self.noeud_entree != -1:
+            return False
+
+        # Indice de noeud d'entrée
+        entry_id = None
+        for n, coords in self.noeuds:
+            if coords == entry:
+                entry_id = n
+                break
+
         clients = t.get_clients()
-        clients_coord = {}
-        for j in range(len(clients)):
-            clients_coord[j] = clients(j)
+        noeuds = self.noeuds
+        graph = {n: [] for n in noeuds.items()}
+        for n1, n2 in self.arcs:
+            graph[n1].append(n2)
+            graph[n2].append(n1)
+        # Application de l'algorithme BFS :
+        visited = set()
+        queue = [entry_id]
+        while queue:
+            front = queue.pop(0)
+            if front not in visited:
+                visited.add(front)
+                for neighbor in graph[front]:
+                    if neighbor not in visited:
+                        queue.append(neighbor)
 
-        for i in range(len(self.noeuds)):
-            (n1, n2) = self.noeuds.keys(i)
+        possible_coord = {noeuds[v] for v in visited}
+        for client in clients:
+            if client not in possible_coord:
+                return False
 
-        return False
+        return True
 
     def configurer(self, t: Terrain):
         self.noeud_entree, self.noeuds, self.arcs = self.strat.configurer(t)
