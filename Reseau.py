@@ -37,8 +37,8 @@ class Reseau:
     def parcourir_reseau(self):
         noeuds = self.noeuds
         entry_id = None
-        if self.noeud_entree != -1:
-            entry_id = self.noeud_entree
+        if self.noeud_entree not in self.noeuds or self.noeud_entree == -1:
+            return set()
         # id de noeud_entree
         graph = {n: [] for n in noeuds.items()}
         for n1, n2 in self.arcs:
