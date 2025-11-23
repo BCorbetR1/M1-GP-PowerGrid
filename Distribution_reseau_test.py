@@ -5,7 +5,7 @@ noeuds = {
     3: (5, 5),
 }
 
-arcs = [(0, 1), (1, 2)]
+arcs = [(0, 1), (1, 2), (2, 3)]
 
 entry = (0, 0)
 
@@ -62,3 +62,10 @@ for i, client_coord in enumerate(clients):
         print(f"client {i} ok ")
     else:
         print(f"client {i} not okay ")
+
+visited_nodes = bfs(graph, entry_id)
+if len(visited_nodes) == len(noeuds):
+    print("tous les noeuds connecté")
+else:
+    not_connected = set(noeuds.keys()) - visited_nodes
+    print(f"Noueds non connecté a l'entrée : {not_connected}")

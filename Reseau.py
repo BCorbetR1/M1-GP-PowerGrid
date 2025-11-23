@@ -34,30 +34,17 @@ class Reseau:
     def set_strategie(self, strat: StrategieReseau):
         self.strat = strat
 
-    def valider_reseau(self) -> bool:
-        # TODO
-        return False
-
-    def valider_distribution(self, t: Terrain) -> bool:
-        # TODO
-        # Coordonnées de noeud d'entrée
-        entry = t.get_entree()
-        if self.noeud_entree not in self.noeuds and self.noeud_entree != -1:
-            return False
-
-        # Indice de noeud d'entrée
-        entry_id = None
-        for n, coords in self.noeuds:
-            if coords == entry:
-                entry_id = n
-                break
-
-        clients = t.get_clients()
+    def parcourir_reseau(self):
         noeuds = self.noeuds
+        entry_id = None
+        if self.noeud_entree != -1:
+            entry_id = self.noeud_entree
+        # id de noeud_entree
         graph = {n: [] for n in noeuds.items()}
         for n1, n2 in self.arcs:
             graph[n1].append(n2)
             graph[n2].append(n1)
+
         # Application de l'algorithme BFS :
         visited = set()
         queue = [entry_id]
@@ -69,11 +56,25 @@ class Reseau:
                     if neighbor not in visited:
                         queue.append(neighbor)
 
+        return visited
+
+    def valider_reseau(self) -> bool:
+        # TODO
+        visited = self.parcourir_reseau()
+        if len(self.noeuds) == len(visited):
+            return True
+        return False
+
+    def valider_distribution(self, t: Terrain) -> bool:
+        # TODO
+        visited = self.parcourir_reseau()
+        noeuds = self.noeuds
+
         possible_coord = {noeuds[v] for v in visited}
+        clients = t.get_clients()
         for client in clients:
             if client not in possible_coord:
                 return False
-
         return True
 
     def configurer(self, t: Terrain):
