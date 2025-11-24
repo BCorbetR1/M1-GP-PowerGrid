@@ -9,6 +9,7 @@ class TestReseau(unittest.TestCase):
 
     def test_definition_entree(self):
         r = Reseau()
+        r.ajouter_noeud(0, (0, 0))
         r.definir_entree(0)
         self.assertEqual(r.noeud_entree, 0)
 
@@ -17,8 +18,11 @@ class TestReseau(unittest.TestCase):
         self.fail()
 
     def test_ajout_arc(self):
-        # TODO
-        self.fail()
+        r = Reseau()
+        r.ajouter_noeud(0, (0, 0))
+        r.ajouter_noeud(1, (1, 1))
+        r.ajouter_arc(0, 1)
+        self.assertIn((0, 1), r.arcs)
 
     def test_validation_correcte(self):
         r = Reseau()
