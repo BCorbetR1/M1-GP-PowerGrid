@@ -33,9 +33,27 @@ class Reseau:
     def set_strategie(self, strat: StrategieReseau):
         self.strat = strat
 
+    # Valider que chaque noeud est accessible depuis le noeud d'entrée
     def valider_reseau(self) -> bool:
         # TODO
-        return False
+        branches = [[]]
+        n = -1
+        for i in range(len(self.arcs)):
+            n1, n2 = self.arcs[i]
+            if n1 == self.noeud_entree:
+                n += 1
+                branches[n] = self.arcs[i]
+            else:
+                branches[n].append(self.arcs[i]) # on part du principe que le premier noeud qu'on parcourt est relié à l'entrée directement
+        
+        for i in range(len(branches)):
+            for j in range(len(branches[i])):
+                n1, n2 = branches[i][j]
+                nn1, nn2 = branches[i][j - 1]
+                if n1 != nn2 or n1 != 0:
+                    return False
+                
+        return True
 
     def valider_distribution(self, t: Terrain) -> bool:
         # TODO

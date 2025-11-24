@@ -1,4 +1,3 @@
-
 from Terrain import Terrain, Case
 
 class StrategieReseau:
