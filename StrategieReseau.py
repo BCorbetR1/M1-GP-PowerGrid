@@ -11,30 +11,32 @@ class StrategieReseau:
 # quels liaisons seront générées entre ce nouveau noeud et les noeuds voisins existants
 class StrategieReseauManuelle(StrategieReseau):
     def configurer(self, t: Terrain) -> tuple[int, dict[int, tuple[int, int]], list[tuple[int, int]]]:
-        # TOVERIFY
         counter = 0
+        nodes = {}
+        arcs = []
         while True:
+            print("Réseau actuel :")
             t.afficher()
             if counter == 0:
-                entree = int(input("Entrez la coordonnée x de l'entrée : "))
-                print(f"Entrée définie {entree})")
+                entry = int(input("Entrez l'ID' de l'entrée : "))
+                print(f"Entrée définie {entry})")
             else :
-                cmd = input("Entrez une commande (ajouter_noeud, ajouter_arc ou quitter) : ")
-                if cmd == "ajouter_noeud":
+                cmd = input("Entrez une commande (1 : ajouter_noeud, 2 : ajouter_arc ou 3 : quitter) : ")
+                if cmd == "1" or cmd == "ajouter_noeud":
                     n = int(input("Entrez l'ID du noeud : "))
                     x = int(input("Entrez la coordonnée x du noeud : "))
                     y = int(input("Entrez la coordonnée y du noeud : "))
-                    self.ajouter_noeud(n, (x, y))
+                    nodes[n] = (x, y)
                     print(f"Noeud {n} ajouté en ({x}, {y})")
-                elif cmd == "ajouter_arc":
+                elif cmd == "2" or cmd == "ajouter_arc":
                     n1 = int(input("Entrez l'ID du premier noeud : "))
                     n2 = int(input("Entrez l'ID du second noeud : "))
-                    self.ajouter_arc(n1, n2)
+                    arcs.append((n1, n2))
                     print(f"Arc ajouté entre {n1} et {n2}")
-                elif cmd == "quitter":
+                elif cmd == "3" or cmd == "quitter":
                     break
             counter += 1
-        return self.entree, self.noeuds, self.arcs
+        return entry, nodes, arcs
 
 
 class StrategieReseauAuto(StrategieReseau):
