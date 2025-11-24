@@ -36,10 +36,7 @@ class StrategieReseauManuelle(StrategieReseau):
             counter += 1
         return self.entree, self.noeuds, self.arcs
 
-
 class StrategieReseauAuto(StrategieReseau):
-    def configurer(
-        self, t: Terrain
-    ) -> tuple[int, dict[int, tuple[int, int]], list[tuple[int, int]]]:
+    def configurer(self, t: Terrain) -> tuple[int, dict[int, tuple[int, int]], list[tuple[int, int]]]:
         # TODO
         return -1, {}, []
