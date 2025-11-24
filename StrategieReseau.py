@@ -13,7 +13,7 @@ class StrategieReseau:
 # quels liaisons seront générées entre ce nouveau noeud et les noeuds voisins existants
 class StrategieReseauManuelle(StrategieReseau):
     def configurer(self, t: Terrain) -> tuple[int, dict[int, tuple[int, int]], list[tuple[int, int]]]:
-        # TODO
+        # TOVERIFY
         counter = 0
         while True:
             t.afficher()
