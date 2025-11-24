@@ -1,5 +1,6 @@
 venv/
 myenv/
+.mypy_cache/
 __pycache__/
 test/__pycache__/
 test-reports/

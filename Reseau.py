@@ -1,6 +1,7 @@
-
+from os import wait
 from Terrain import Terrain, Case
 from StrategieReseau import StrategieReseau, StrategieReseauAuto
+
 
 class Reseau:
     def __init__(self):
@@ -33,34 +34,51 @@ class Reseau:
     def set_strategie(self, strat: StrategieReseau):
         self.strat = strat
 
-    # Valider que chaque noeud est accessible depuis le noeud d'entrée
+    def parcourir_reseau(self):
+        noeuds = self.noeuds
+        entry_id = None
+        if self.noeud_entree not in self.noeuds or self.noeud_entree == -1:
+            return set()
+        # id de noeud_entree
+        graph = {n: [] for n in noeuds.items()}
+        for n1, n2 in self.arcs:
+            graph[n1].append(n2)
+            graph[n2].append(n1)
+
+        # Application de l'algorithme BFS :
+        visited = set()
+        queue = [entry_id]
+        while queue:
+            front = queue.pop(0)
+            if front not in visited:
+                visited.add(front)
+                for neighbor in graph[front]:
+                    if neighbor not in visited:
+                        queue.append(neighbor)
+
+        return visited
+
     def valider_reseau(self) -> bool:
         # TODO
-        branches = [[]]
-        n = -1
-        for i in range(len(self.arcs)):
-            n1, n2 = self.arcs[i]
-            if n1 == self.noeud_entree:
-                n += 1
-                branches[n] = self.arcs[i]
-            else:
-                branches[n].append(self.arcs[i]) # on part du principe que le premier noeud qu'on parcourt est relié à l'entrée directement
-        
-        for i in range(len(branches)):
-            for j in range(len(branches[i])):
-                n1, n2 = branches[i][j]
-                nn1, nn2 = branches[i][j - 1]
-                if n1 != nn2 or n1 != 0:
-                    return False
-                
-        return True
+        visited = self.parcourir_reseau()
+        if len(self.noeuds) == len(visited):
+            return True
+        return False
 
     def valider_distribution(self, t: Terrain) -> bool:
         # TODO
-        return False
+        visited = self.parcourir_reseau()
+        noeuds = self.noeuds
+
+        possible_coord = {noeuds[v] for v in visited}
+        clients = t.get_clients()
+        for client in clients:
+            if client not in possible_coord:
+                return False
+        return True
 
     def configurer(self, t: Terrain):
-        self.noeud_entree, self.noeuds, self.arcs  = self.strat.configurer(t)
+        self.noeud_entree, self.noeuds, self.arcs = self.strat.configurer(t)
 
     def afficher(self) -> None:
         # TODO
@@ -103,4 +121,3 @@ class Reseau:
             else:
                 cout += 1
         return cout
-
