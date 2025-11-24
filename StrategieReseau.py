@@ -2,9 +2,7 @@ from Terrain import Terrain, Case
 
 
 class StrategieReseau:
-    def configurer(
-        self, t: Terrain
-    ) -> tuple[int, dict[int, tuple[int, int]], list[tuple[int, int]]]:
+    def configurer(self, t: Terrain) -> tuple[int, dict[int, tuple[int, int]], list[tuple[int, int]]]:
         return -1, {}, []
 
 # implémentation de la fonction qui gère la configuration manuelle d'un réseau à partir d'un terrain. L'utilisateur doit avoir l'occasion 
